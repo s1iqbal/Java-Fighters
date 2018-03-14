@@ -23,17 +23,17 @@ public class Game extends Canvas implements Runnable{
  public final String TITLE = "Final Battle.";
  private boolean running = false;
  private Thread thread;
- 
+
  //images
  private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
  private BufferedImage menuIMG = null;
  private BufferedImage charSelIMG = null;
  public BufferedImage player1 = null; //test
  public BufferedImage player2 = null; //test
- public BufferedImage gameBG= null; 
+ public BufferedImage gameBG= null;
  private Menu menu;
  private CharSel1 charSel1;
- 
+
  //states
  public static enum STATE {
   MENU, CHARSEL1, CHARSEL2, CHOOSE, GAME
@@ -45,19 +45,19 @@ public class Game extends Canvas implements Runnable{
  public static enum CHOICEP2 {
   BONDP2, SAADP2, NOTHING2
  };
- 
+
  //current state and choice
  public static CHOICEP1 ChoiceP1 = CHOICEP1.NOTHING;
  public static CHOICEP2 ChoiceP2 = CHOICEP2.NOTHING2;
  public static STATE State = STATE.MENU;
- 
+
  private Player p;
  private Player2 p2;
-  
+
  static Texture tex;
- 
- 
- 
+
+
+
  public void init(){
 
   BufferedImageLoader loaderMenu = new BufferedImageLoader();
@@ -83,15 +83,15 @@ public class Game extends Canvas implements Runnable{
    addKeyListener(new KeyInput(this));
    menu = new Menu ();
    charSel1 = new CharSel1 ();
-   
 
 
-   
-  
-  
-  
+
+
+
+
+
  }
- 
+
  private synchronized void start() {
   if (running)
    return;
@@ -99,7 +99,7 @@ public class Game extends Canvas implements Runnable{
   thread = new Thread (this);
   thread.start();
  }
- 
+
  private synchronized void stop() {
   if (!running)
    return;
@@ -108,10 +108,10 @@ public class Game extends Canvas implements Runnable{
    thread.join();
   } catch (InterruptedException e) {
    e.printStackTrace();
-  } 
+  }
   System.exit(1);
  }
- 
+
  public void run() {
   init();
 
@@ -122,7 +122,7 @@ public class Game extends Canvas implements Runnable{
   int updates = 0;
   int frames = 0;
   long timer = System.currentTimeMillis();
-  
+
   while (running) {
    long now = System.nanoTime();
    delta += (now - lastTime) / ns;
@@ -134,7 +134,7 @@ public class Game extends Canvas implements Runnable{
    }
    render();
    frames ++;
-   
+
    if (System.currentTimeMillis() - timer > 1000) {
     timer += 1000;
     System.out.println(updates + " Ticks, FPS " + frames);
@@ -164,27 +164,27 @@ public class Game extends Canvas implements Runnable{
   if (bs == null) {
    createBufferStrategy(3);
    return;
-  } 
-  
+  }
+
   Graphics g = bs.getDrawGraphics();
-  
-  
+
+
   g.drawImage(image, 0,0,getWidth(), getHeight(), this);
   if (State == STATE.GAME) {
-   
-   
+
+
    g.clearRect(0, 0, 800, 600);
-    
+
    g.drawImage(gameBG, 0, 0, null);
    p.render(g);
    p2.render(g);
-   
-  } 
+
+  }
   else if (State == STATE.MENU) {
    g.clearRect(0, 0, 800, 600);
    g.drawImage(menuIMG, 0, 0, null);
    menu.render(g);
-   
+
   }
   else if (State == STATE.CHARSEL1 || State == STATE.CHARSEL2) {
    g.clearRect(0, 0, 800, 600);
@@ -193,12 +193,12 @@ public class Game extends Canvas implements Runnable{
   }
   g.dispose();
   bs.show();
-  
+
  }
- 
+
  public void keyPressed(KeyEvent e){
   int key = e.getKeyCode();
-  
+
   if (key == KeyEvent.VK_D){
    p.setVelX(5);
   }
@@ -218,17 +218,17 @@ public class Game extends Canvas implements Runnable{
     clip.open(audioInputStream);
     clip.start();
     }
-   
+
    catch(Exception ex)
    {
    }
-   
+
   }
   else if (key == KeyEvent.VK_J){
    p.punch = true;
    p.inAction = true;
-   
-  //punch audio file 
+
+  //punch audio file
    try{
     AudioInputStream audioInputStream =
         AudioSystem.getAudioInputStream(
@@ -237,11 +237,11 @@ public class Game extends Canvas implements Runnable{
     clip.open(audioInputStream);
     clip.start();
     }
-   
+
    catch(Exception ex)
   {
   }
-   
+
    if (p.facing == 1 && p.getX()!=0){
      p.setVelX(0);
    }
@@ -252,11 +252,11 @@ public class Game extends Canvas implements Runnable{
   else if (key == KeyEvent.VK_K){
    p.kick = true;
    p.inAction = true;
-   
+
 
 //kick audio file
-      
-   
+
+
    try{
     AudioInputStream audioInputStream =
         AudioSystem.getAudioInputStream(
@@ -264,7 +264,7 @@ public class Game extends Canvas implements Runnable{
     Clip clip = AudioSystem.getClip();
     clip.open(audioInputStream);
     clip.start();
-    }   
+    }
    catch(Exception ex)
    {
    }
@@ -273,7 +273,7 @@ public class Game extends Canvas implements Runnable{
   else if (key == KeyEvent.VK_L){
    p.special = true;
    p.inAction = true;
-   
+
  //punch audio file
       try{
     AudioInputStream audioInputStream =
@@ -283,12 +283,12 @@ public class Game extends Canvas implements Runnable{
     clip.open(audioInputStream);
     clip.start();
     }
-   
+
    catch(Exception ex)
    {
    }
-   
- //  
+
+ //
    p.setVelX(0);
   }
   else if (key == KeyEvent.VK_S && key == KeyEvent.VK_D){
@@ -301,8 +301,8 @@ public class Game extends Canvas implements Runnable{
    p.strafe = true;
    p.inAction = true;
   }
-  
-  
+
+
   if (key == KeyEvent.VK_RIGHT){
    p2.setVelXp2(5);
   }
@@ -314,8 +314,8 @@ public class Game extends Canvas implements Runnable{
   }
   else if (key == KeyEvent.VK_UP && !p2.isJumpingp2()){
    p2.setVelYp2(-17);
-    
-   
+
+
    try{
     AudioInputStream audioInputStream =
         AudioSystem.getAudioInputStream(
@@ -323,7 +323,7 @@ public class Game extends Canvas implements Runnable{
     Clip clip = AudioSystem.getClip();
     clip.open(audioInputStream);
     clip.start();
-    }   
+    }
    catch(Exception ex)
    {
    }
@@ -331,8 +331,8 @@ public class Game extends Canvas implements Runnable{
   else if (key == KeyEvent.VK_NUMPAD1){
    p2.punchP2 = true;
    p2.inActionP2 = true;
-       
-   
+
+
    try{
     AudioInputStream audioInputStream =
         AudioSystem.getAudioInputStream(
@@ -340,11 +340,11 @@ public class Game extends Canvas implements Runnable{
     Clip clip = AudioSystem.getClip();
     clip.open(audioInputStream);
     clip.start();
-    }   
+    }
    catch(Exception ex)
    {
    }
-   
+
    p2.setVelXp2(0);
   }
   else if (key == KeyEvent.VK_NUMPAD2){
@@ -358,16 +358,16 @@ public class Game extends Canvas implements Runnable{
     clip.open(audioInputStream);
     clip.start();
     }
-   
+
    catch(Exception ex)
    {
    }
-   p2.setVelXp2(0);   
+   p2.setVelXp2(0);
   }
   else if (key == KeyEvent.VK_NUMPAD3){
    p2.specialP2 = true;
    p2.inActionP2 = true;
-            
+
    try{
     AudioInputStream audioInputStream =
         AudioSystem.getAudioInputStream(
@@ -376,11 +376,11 @@ public class Game extends Canvas implements Runnable{
     clip.open(audioInputStream);
     clip.start();
     }
-   
+
    catch(Exception ex)
    {
    }
-   
+
    p2.setVelXp2(0);
   }
   else if (key == KeyEvent.VK_DOWN && key == KeyEvent.VK_LEFT){
@@ -390,13 +390,13 @@ public class Game extends Canvas implements Runnable{
   else if (key == KeyEvent.VK_DOWN && key == KeyEvent.VK_RIGHT){
    p2.strafeP2 = true;
    p2.inActionP2 = true;
-   
+
   }
-  
+
  }
  public void keyReleased(KeyEvent e) {
   int key = e.getKeyCode();
-  
+
   if (key == KeyEvent.VK_D){
    p.setVelX(0);
   }
@@ -412,7 +412,7 @@ public class Game extends Canvas implements Runnable{
   else if (key == KeyEvent.VK_J){
    p.punch = false;
    p.inAction = false;
-   
+
   }
   else if (key == KeyEvent.VK_K){
    p.kick = false;
@@ -434,7 +434,7 @@ public class Game extends Canvas implements Runnable{
    p.strafe = false;
    p.inAction = false;
   }
-  
+
    if (key == KeyEvent.VK_RIGHT){
    p2.setVelXp2(0);
   }
@@ -469,22 +469,22 @@ public class Game extends Canvas implements Runnable{
   else if (key == KeyEvent.VK_DOWN && key == KeyEvent.VK_RIGHT){
    p2.strafeP2 = false;
    p2.inActionP2 = false;
-   
+
   }
-  
+
  }
- 
+
  public static Texture getInstance(){
   return tex;
  }
- 
+
  public static void main (String[] args) {
   Game game = new Game();
-  
+
   game.setPreferredSize (new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
   game.setMaximumSize (new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
   game.setMinimumSize (new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
-  
+
   JFrame frame = new JFrame (game.TITLE);
   frame.add(game);
   frame.pack();
@@ -497,5 +497,5 @@ public class Game extends Canvas implements Runnable{
   /*public BufferedImage getTestChar(){
    return player1;
   }*/
- 
+
 }
